@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="writer_name">Uploader Name</string>
+    <string name="text_description">Short Description</string>
+    <string name="image_description">Story Image</string>
+</resources>

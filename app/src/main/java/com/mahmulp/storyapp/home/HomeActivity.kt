@@ -1,0 +1,85 @@
+package com.mahmulp.storyapp.home
+
+import android.content.Intent
+import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.mahmulp.core.auth.UserRepository
+import com.mahmulp.core.data.Resource
+import com.mahmulp.core.ui.StoryAdapter
+import com.mahmulp.storyapp.MainActivity
+import com.mahmulp.storyapp.R
+import com.mahmulp.storyapp.databinding.ActivityHomeBinding
+import com.mahmulp.storyapp.detail.DetailActivity
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
+class HomeActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityHomeBinding
+    private val homeViewModel: HomeViewModel by viewModel()
+    private val userRepository: UserRepository by inject()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityHomeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val storyAdapter = StoryAdapter()
+        storyAdapter.onItemClick = { storyData ->
+            val intent = Intent(this, DetailActivity::class.java)
+            intent.putExtra(DetailActivity.EXTRA_DATA, storyData)
+            startActivity(intent)
+        }
+
+        homeViewModel.story.observe(this) { story ->
+            if (story != null) {
+                when(story) {
+                    is Resource.Loading -> binding.progressBar.visibility = View.VISIBLE
+                    is Resource.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        storyAdapter.setData(story.data)
+                    }
+                    is Resource.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                    }
+                }
+            }
+        }
+
+        with(binding.rvStory) {
+            layoutManager = LinearLayoutManager(context)
+            setHasFixedSize(true)
+            adapter = storyAdapter
+        }
+
+        val toolbar = binding.mtAppbar
+        setSupportActionBar(toolbar)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_favorite -> {
+                startActivity(Intent(this, Class.forName("com.mahmulp.storyapp.favorite.FavoriteActivity")))
+                Toast.makeText(this, "Menu Favorit", Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.action_logout -> {
+                userRepository.logoutUser()
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+                Toast.makeText(this, "Berhasil Keluar", Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+}
