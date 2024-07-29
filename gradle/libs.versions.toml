@@ -36,9 +36,9 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-koin-android-viewmodel = { module = "org.koin:koin-androidx-viewmodel", version.ref = "koinAndroidViewmodel" }
-koin-core = { module = "org.koin:koin-core", version.ref = "koinCore" }
-koin-android = { module = "org.koin:koin-android", version.ref = "koinAndroid" }
+koin-android-viewmodel = { module = "io.insert-koin:koin-androidx-viewmodel", version.ref = "koinAndroidViewmodel" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdlib" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
