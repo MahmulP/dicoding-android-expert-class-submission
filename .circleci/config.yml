@@ -3,7 +3,7 @@ version: 2.1
 executors:
   android-executor:
     docker:
-      - image: circleci/android:api-30
+      - image: circleci/openjdk:17-jdk
     working_directory: ~/project
 
 jobs:
@@ -12,16 +12,18 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Java 17
+          name: Install Android SDK
           command: |
-            sudo apt-get update
-            sudo apt-get install openjdk-17-jdk -y
-            sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-17-openjdk-amd64/bin/java 1
-            sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac 1
-            java -version
-      - run:
-          name: Download and setup dependencies
-          command: sdkmanager "platforms;android-30" "build-tools;30.0.3" "platform-tools"
+            sudo apt-get update -y
+            sudo apt-get install -y wget unzip
+            wget https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip -O cmdline-tools.zip
+            unzip cmdline-tools.zip
+            sudo mkdir -p /usr/local/android-sdk/cmdline-tools
+            sudo mv cmdline-tools /usr/local/android-sdk/cmdline-tools/latest
+            export ANDROID_SDK_ROOT=/usr/local/android-sdk
+            export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin
+            yes | sdkmanager --licenses
+            sdkmanager "platforms;android-30" "build-tools;30.0.3" "platform-tools"
       - restore_cache:
           keys:
             - gradle-cache-{{ checksum "build.gradle" }}
