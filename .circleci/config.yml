@@ -12,18 +12,28 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Android SDK
+          name: Install Required Tools
           command: |
             sudo apt-get update -y
             sudo apt-get install -y wget unzip
+      - run:
+          name: Install Android SDK
+          command: |
             wget https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip -O cmdline-tools.zip
             unzip cmdline-tools.zip
             sudo mkdir -p /usr/local/android-sdk/cmdline-tools
             sudo mv cmdline-tools /usr/local/android-sdk/cmdline-tools/latest
-            export ANDROID_SDK_ROOT=/usr/local/android-sdk
-            export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin
+            echo "export ANDROID_SDK_ROOT=/usr/local/android-sdk" >> $BASH_ENV
+            echo "export PATH=$PATH:/usr/local/android-sdk/cmdline-tools/latest/bin" >> $BASH_ENV
+            source $BASH_ENV
             yes | sdkmanager --licenses
             sdkmanager "platforms;android-30" "build-tools;30.0.3" "platform-tools"
+            sdkmanager --list
+      - run:
+          name: Verify SDK Installation
+          command: |
+            echo "Checking SDK installation"
+            sdkmanager --list
       - run:
           name: Set Java 17 Environment Variables
           command: |
