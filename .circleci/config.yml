@@ -13,6 +13,8 @@ jobs:
       ANDROID_HOME: /opt/android/sdk
       PATH: /opt/android/sdk/cmdline-tools/latest/bin:/opt/android/sdk/platform-tools:/opt/android/sdk/tools/bin:$PATH
     steps:
+      - checkout
+
       - run:
           name: Install Required Tools
           command: |
