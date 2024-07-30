@@ -8,6 +8,8 @@ import com.mahmulp.core.data.source.remote.RemoteDataSource
 import com.mahmulp.core.data.source.remote.network.ApiService
 import com.mahmulp.core.domain.repository.IStoryRepository
 import com.mahmulp.core.utils.AppExecutors
+import net.sqlcipher.database.SQLiteDatabase
+import net.sqlcipher.database.SupportFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -19,10 +21,14 @@ import java.util.concurrent.TimeUnit
 val databaseModule = module {
     factory { get<StoryDatabase>().storyDao() }
     single {
+        val passphrase: ByteArray = SQLiteDatabase.getBytes("mahmulp".toCharArray())
+        val factory = SupportFactory(passphrase)
         Room.databaseBuilder(
             androidContext(),
             StoryDatabase::class.java, "Story.db"
-        ).fallbackToDestructiveMigration().build()
+        ).fallbackToDestructiveMigration()
+            .openHelperFactory(factory)
+            .build()
     }
 }
 

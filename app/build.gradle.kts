@@ -36,6 +36,22 @@ android {
         jvmTarget = "1.8"
     }
     dynamicFeatures += setOf(":favorite")
+
+    lint {
+        // Menonaktikan Issue ID yang disebutkan.
+        disable += "TypographyFractions" + "TypographyQuotes"
+        // Mengkatifkan Issue ID yang disebutkan.
+        enable += "RtlHardcoded" + "RtlCompat" + "RtlEnabled"
+        // Untuk memeriksa Issue ID tertentu saja, yang lainnya akan dihiraukan
+        // Ia akan menghiraukan kode enable dan disable yang sebelumnya
+        checkOnly += "NewApi" + "InlinedApi"
+        // Jika true, report hasil lint akan dinonaktifkan
+        quiet = true
+        // Jika true (default), proses build akan dihentikan jika ada eror.
+        abortOnError = false
+        // Jika true, hanya memberikan report eror.
+        ignoreWarnings = true
+    }
 }
 
 dependencies {
@@ -57,4 +73,6 @@ dependencies {
     implementation(libs.koin.android.viewmodel)
 
     implementation(libs.glide)
+
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
 }

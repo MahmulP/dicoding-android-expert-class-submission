@@ -65,4 +65,9 @@ dependencies {
     implementation (libs.koin.core)
     implementation (libs.koin.android)
     implementation (libs.koin.android.viewmodel)
+
+    implementation(libs.androidx.security.crypto)
+    implementation(libs.secure.preferences.lib)
+    implementation (libs.android.database.sqlcipher)
+    implementation (libs.androidx.sqlite.ktx)
 }

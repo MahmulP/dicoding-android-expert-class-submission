@@ -1,10 +1,14 @@
 package com.mahmulp.storyapp.home
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +24,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
+    private lateinit var broadcastReceiver: BroadcastReceiver
+    private lateinit var tvMemoryLeak: TextView
+
     private val homeViewModel: HomeViewModel by viewModel()
     private val userRepository: UserRepository by inject()
 
@@ -58,6 +65,8 @@ class HomeActivity : AppCompatActivity() {
 
         val toolbar = binding.mtAppbar
         setSupportActionBar(toolbar)
+
+        tvMemoryLeak = binding.tvMemoryLeak
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -81,5 +90,39 @@ class HomeActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        registerBroadcastReceiver()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unregisterReceiver(broadcastReceiver)
+    }
+
+    private fun registerBroadcastReceiver() {
+        broadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                when(intent.action) {
+                    Intent.ACTION_POWER_CONNECTED -> {
+                        tvMemoryLeak.visibility = View.GONE
+                        binding.rvStory.visibility = View.VISIBLE
+                    }
+                    Intent.ACTION_POWER_DISCONNECTED -> {
+                        tvMemoryLeak.visibility = View.VISIBLE
+                        binding.rvStory.visibility = View.GONE
+                        tvMemoryLeak.text = getString(R.string.power_disconnected)
+                    }
+                }
+            }
+        }
+        val intentFilter = IntentFilter()
+        intentFilter.apply {
+            addAction(Intent.ACTION_POWER_CONNECTED)
+            addAction(Intent.ACTION_POWER_DISCONNECTED)
+        }
+        registerReceiver(broadcastReceiver, intentFilter)
     }
 }
