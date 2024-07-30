@@ -83,3 +83,37 @@ public *;
 
 # Uncomment for DexGuard only
 #-keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+
+
+-keep class com.mahmulp.core.domain.** { *; }
+-keep class com.mahmulp.core.di.CoreModuleKt { *; }
+-keep class com.mahmulp.core.auth.** { *; }
+-keep class com.mahmulp.core.ui.StoryAdapter { *; }
+-keep class com.mahmulp.core.data.source.remote.response.** { *; }
+
+# Keep the Resource class and its inner classes
+-keep class com.mahmulp.core.data.Resource {
+    *;
+}
+-keep class com.mahmulp.core.data.Resource$Error {
+    *;
+}
+-keep class com.mahmulp.core.data.Resource$Loading {
+    *;
+}
+-keep class com.mahmulp.core.data.Resource$Success {
+    *;
+}
+
+# Alternatively, keep all inner classes of Resource
+-keep class com.mahmulp.core.data.Resource$* {
+    *;
+}
+
+-keep class kotlin.** { *; }
+-keepclassmembers class kotlin.** { *; }
+-dontwarn kotlin.**
+
+-keep class androidx.viewbinding.** { *; }
+-keepclassmembers class androidx.viewbinding.** { *; }
+-dontwarn androidx.viewbinding.**

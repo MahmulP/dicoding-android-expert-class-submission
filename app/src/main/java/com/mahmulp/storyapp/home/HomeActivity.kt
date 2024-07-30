@@ -12,6 +12,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
+import com.google.android.play.core.splitinstall.SplitInstallRequest
 import com.mahmulp.core.auth.UserRepository
 import com.mahmulp.core.data.Resource
 import com.mahmulp.core.ui.StoryAdapter
@@ -77,8 +79,24 @@ class HomeActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_favorite -> {
-                startActivity(Intent(this, Class.forName("com.mahmulp.storyapp.favorite.FavoriteActivity")))
-                Toast.makeText(this, "Menu Favorit", Toast.LENGTH_SHORT).show()
+                val splitInstallManager = SplitInstallManagerFactory.create(this)
+                val moduleName = "favorite"
+
+                if (splitInstallManager.installedModules.contains(moduleName)) {
+                    startFavoriteActivity()
+                } else {
+                    val request = SplitInstallRequest.newBuilder()
+                        .addModule(moduleName)
+                        .build()
+
+                    splitInstallManager.startInstall(request)
+                        .addOnSuccessListener {
+                            startFavoriteActivity()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Failed to install module", Toast.LENGTH_SHORT).show()
+                        }
+                }
                 true
             }
             R.id.action_logout -> {
@@ -89,6 +107,17 @@ class HomeActivity : AppCompatActivity() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun startFavoriteActivity() {
+        try {
+            val activityClass = Class.forName("com.mahmulp.storyapp.favorite.FavoriteActivity")
+            startActivity(Intent(this, activityClass))
+            Toast.makeText(this, "Menu Favorit", Toast.LENGTH_SHORT).show()
+        } catch (e: ClassNotFoundException) {
+            e.printStackTrace()
+            Toast.makeText(this, "Failed to start activity", Toast.LENGTH_SHORT).show()
         }
     }
 
