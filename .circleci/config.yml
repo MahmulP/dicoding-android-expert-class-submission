@@ -19,8 +19,6 @@ jobs:
             sudo apt-get update -y
             sudo apt-get install -y wget unzip openjdk-17-jdk openssh-client
 
-      - checkout
-
       - run:
           name: Set Up Local Properties
           command: echo "sdk.dir=/opt/android/sdk" > local.properties
