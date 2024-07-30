@@ -1,6 +1,7 @@
 package com.mahmulp.core.di
 
 import androidx.room.Room
+import com.mahmulp.core.BuildConfig
 import com.mahmulp.core.data.StoryRepository
 import com.mahmulp.core.data.source.local.LocalDataSource
 import com.mahmulp.core.data.source.local.room.StoryDatabase
@@ -10,6 +11,7 @@ import com.mahmulp.core.domain.repository.IStoryRepository
 import com.mahmulp.core.utils.AppExecutors
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SupportFactory
+import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -34,15 +36,23 @@ val databaseModule = module {
 
 val networkModule = module {
     single {
+        val hostname = "story-api.dicoding.dev"
+        val certificatePinner = CertificatePinner.Builder()
+            .add(hostname, "sha256/qCP4eoKVje0xZdOY+LDsYOVqaH8xPXVKNMjT8EWo1vM=")
+            .add(hostname, "sha256/bdrBhpj38ffhxpubzkINl0rG+UyossdhcBYj+Zx2fcc=")
+            .add(hostname, "sha256/C5+lpZ7tcVwmwQIMcRtPbsQtWLABXhQzejna0wHFr8M=")
+            .build()
         OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .connectTimeout(120, TimeUnit.SECONDS)
             .readTimeout(120, TimeUnit.SECONDS)
+            .certificatePinner(certificatePinner)
             .build()
     }
     single {
+        val baseUrl = BuildConfig.BASE_URL
         Retrofit.Builder()
-            .baseUrl("https://story-api.dicoding.dev/v1/")
+            .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .client(get())
             .build()
