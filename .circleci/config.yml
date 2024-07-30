@@ -14,14 +14,12 @@ jobs:
       PATH: /opt/android/sdk/cmdline-tools/latest/bin:/opt/android/sdk/platform-tools:/opt/android/sdk/tools/bin:$PATH
     steps:
       - checkout
+
       - run:
           name: Install Required Tools
           command: |
             sudo apt-get update -y
-            sudo apt-get install -y wget unzip openjdk-17-jdk
-
-      - restore_cache:
-            key: jars-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
+            sudo apt-get install -y wget unzip openjdk-17-jdk openssh-client
 
       - run:
           name: Set Up Local Properties
