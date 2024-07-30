@@ -21,6 +21,9 @@ jobs:
             sudo apt-get update -y
             sudo apt-get install -y wget unzip openjdk-17-jdk
 
+      - restore_cache:
+            key: jars-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
+
       - run:
           name: Set Up Local Properties
           command: echo "sdk.dir=/opt/android/sdk" > local.properties
