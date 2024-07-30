@@ -70,7 +70,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/iv_item_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:text="@string/text_description" />
+            tools:text="@string/text_description"
+            android:maxLines="2"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
