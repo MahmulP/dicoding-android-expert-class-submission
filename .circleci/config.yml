@@ -19,16 +19,6 @@ jobs:
             apt-get install -y wget unzip openjdk-17-jdk
 
       - run:
-          name: Install Android SDK Command Line Tools
-          command: |
-            wget https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip -O cmdline-tools.zip
-            mkdir -p $ANDROID_HOME/cmdline-tools
-            unzip cmdline-tools.zip -d $ANDROID_HOME/cmdline-tools
-            rm cmdline-tools.zip
-            yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --licenses
-            $ANDROID_HOME/cmdline-tools/bin/sdkmanager "platforms;android-30" "build-tools;30.0.3" "platform-tools"
-
-      - run:
           name: Set Up Local Properties
           command: |
             echo "sdk.dir=$ANDROID_HOME" > local.properties
