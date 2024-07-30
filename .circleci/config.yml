@@ -3,7 +3,7 @@ version: 2.1
 executors:
   android-executor:
     docker:
-      - image: openjdk:17-jdk
+      - image: ubuntu:20.04
     working_directory: ~/project
 
 jobs:
@@ -14,15 +14,15 @@ jobs:
       - run:
           name: Install Required Tools
           command: |
-            sudo apt-get update -y
-            sudo apt-get install -y wget unzip
+            apt-get update -y
+            apt-get install -y wget unzip openjdk-17-jdk
       - run:
           name: Install Android SDK
           command: |
             wget https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip -O cmdline-tools.zip
             unzip cmdline-tools.zip
-            sudo mkdir -p /usr/local/android-sdk/cmdline-tools
-            sudo mv cmdline-tools /usr/local/android-sdk/cmdline-tools/latest
+            mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
+            mv cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
             echo "export ANDROID_SDK_ROOT=/usr/local/android-sdk" >> $BASH_ENV
             echo "export PATH=$PATH:/usr/local/android-sdk/cmdline-tools/latest/bin" >> $BASH_ENV
             source $BASH_ENV
@@ -34,13 +34,6 @@ jobs:
           command: |
             echo "Checking SDK installation"
             sdkmanager --list
-      - run:
-          name: Set Java 17 Environment Variables
-          command: |
-            echo "export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $BASH_ENV
-            echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> $BASH_ENV
-            source $BASH_ENV
-            java -version
       - run:
           name: Setup Gradle Wrapper
           command: ./gradlew wrapper --gradle-version 8.9
