@@ -47,8 +47,8 @@ jobs:
       - save_cache:
           key: 'android-orb-v1-{{ epoch }}'
           paths:
-            - ~/.gradle/caches
-            - ~/.gradle/wrapper
+            - ~/.android/build-cache
+            - ~/.android/cache
 
       - run:
           name: Run Build
