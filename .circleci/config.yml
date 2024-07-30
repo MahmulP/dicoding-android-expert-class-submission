@@ -1,11 +1,9 @@
 version: 2.1
-
 executors:
   android-executor:
     docker:
       - image: circleci/android:api-30
     working_directory: ~/project
-
 jobs:
   build:
     executor: android-executor
@@ -14,50 +12,39 @@ jobs:
       PATH: /opt/android/sdk/cmdline-tools/latest/bin:/opt/android/sdk/platform-tools:/opt/android/sdk/tools/bin:$PATH
     steps:
       - checkout
-
       - run:
           name: Install Required Tools
           command: |
             sudo apt-get update -y
-            sudo apt-get install -y wget unzip openjdk-17-jdk openssh-client
-
+            sudo apt-get install -y wget unzip openjdk-17-jdk
       - run:
           name: Set Up Local Properties
           command: echo "sdk.dir=/opt/android/sdk" > local.properties
-
       - run:
           name: Grant Execute Permission to Gradle Wrapper
           command: chmod +x ./gradlew
-
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
-
       - save_cache:
           key: 'android-orb-v1-{{ epoch }}'
           paths:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
-
       - run:
           name: Run Build
           command: ./gradlew build
-
       - store_artifacts:
           path: app/build/reports
           destination: reports
-
       - run:
           name: Run Tests
           command: ./gradlew lint test
-
       - store_test_results:
           path: app/build/test-results
-
       - store_artifacts:
           path: app/build/outputs/apk/debug/
           destination: artifact-file
-
 workflows:
   version: 2
   build_and_test:
