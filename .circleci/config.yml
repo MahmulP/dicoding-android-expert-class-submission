@@ -26,10 +26,6 @@ jobs:
           name: Download Dependencies
           command: ./gradlew androidDependencies
 
-      - run:
-          name: Run Build
-          command: ./gradlew assembleDebug
-
       - save_cache:
           key: 'android-orb-v1-{{ epoch }}'
           paths:
